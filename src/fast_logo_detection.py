@@ -11,7 +11,6 @@ def _build_kernel():
 def _morphological_gradient(image):
     """Applies the morfological gradient to the image with
     the specified kernel type and size"""
-
     kernel = _build_kernel()
     morph_gradient = cv2.morphologyEx(image, cv2.MORPH_GRADIENT, kernel)
     return morph_gradient
@@ -62,19 +61,24 @@ def find_logo(args_dict):
 
     x, y, w, h = cv2.boundingRect(contours[logo_ind])
     cv2.rectangle(image_output, (x, y), (x + w, y + h), (0, 255, 0), 3)
-
     image_logo = image_src[y:y+h, x:x+w]
-
+    
     if not output_file:
         src_name = input_file[:input_file.rfind('.')]
         ext = input_file[input_file.rfind('.'):]
+        output_contours_path = src_name + '_contours' + ext
         output_logo_path = src_name + '_logo' + ext
         cv2.imwrite(output_logo_path, image_logo)
     else:
+        src_name = output_file[:output_file.rfind('.')]
+        ext = output_file[output_file.rfind('.'):]
+        output_contours_path = src_name + '_contours' + ext
         cv2.imwrite(output_file, image_logo)
+        
+    cv2.imwrite(output_contours_path, image_output)
 
 def main():
-    """Defines command line arguments and instanciates """
+    """Defines command line arguments and runs the program"""
     desc = 'A python script designed to find, select and save' \
            ' a region of an image containing a logo.'
     parser = argparse.ArgumentParser(description=desc)
